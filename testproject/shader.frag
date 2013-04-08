@@ -1,8 +1,6 @@
-layout(location=0) out vec4 colorOut;
-
-in vec3 normal;
-
-void main(void)
+#version 330
+out vec4 FragColor;  
+void main()
 {
-	colorOut = color;
+	FragColor = vec4(1.0, 0.0, 0.0, 1.0);
 }

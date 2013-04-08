@@ -18,8 +18,8 @@ public:
 private:
 	float mMov;
 	float mTestTria[9];
-	GLuint mVBO;
-	void loadShader(std::string filename, bool fragment);
+	GLuint mVBO, mShaderProg;
+	void loadShader(std::string filename, GLenum sType);
 };
 
 #endif // RENDER_H

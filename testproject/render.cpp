@@ -34,18 +34,38 @@ void Render::init(int *argc, char **argv)
 	glGenBuffers(1, &mVBO);
 	glBindBuffer(GL_ARRAY_BUFFER, mVBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(mTestTria), mTestTria, GL_STATIC_DRAW);
-	loadShader("../shader.frag", true);
-	loadShader("../shader.vert", false);
+	mShaderProg = glCreateProgram();
+	
+	loadShader("../shader.frag", GL_FRAGMENT_SHADER);
+	loadShader("../shader.vert", GL_VERTEX_SHADER);
 }
 
-void Render::loadShader(std::string filename, bool fragment) {
+void Render::loadShader(std::string filename, GLenum sType) {
+	GLuint shaderId = glCreateShader(sType);
 	std::stringstream stream;
 	std::ifstream f(filename.c_str());
 	if (f.is_open()) {
 		stream << f.rdbuf();
+		const char *chars = stream.str().c_str();
+		glShaderSource(shaderId, 1, &chars, NULL);
+		glCompileShader(shaderId);
+		GLint success;
+		glGetShaderiv(shaderId, GL_COMPILE_STATUS, &success);
 		std::cout << stream.str() << std::endl;
 		f.close();
+		if (!success) {
+			char log[1024];
+			glGetShaderInfoLog(shaderId, 1024, NULL, log);
+			std::cout << log << std::endl;
+		}
 	}
+	glAttachShader(mShaderProg, shaderId);
+	glLinkProgram(mShaderProg);
+	glValidateProgram(mShaderProg);
+	glUseProgram(mShaderProg);
+	
+	
+	
 }
 
 void Render::render()
